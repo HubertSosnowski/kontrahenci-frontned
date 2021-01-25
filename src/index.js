@@ -8,8 +8,6 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   body {
-    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;600&display=swap');
-
     font-family: 'Ubuntu', sans-serif;
     font-size: 20px;
     background-color: #fdfdfd;
