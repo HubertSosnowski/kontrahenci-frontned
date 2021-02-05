@@ -9,6 +9,11 @@ import axios from 'axios';
 import Fakerator from 'fakerator';
 import { CodeBlock, dracula } from 'react-code-blocks';
 
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+
 import {
   sampleCodeKontrahenci,
   initialStateForm,
@@ -44,11 +49,46 @@ const BottomDiv = styled.div`
 
 const CodeWrapper = styled.div``;
 
+const FindKontrahent = styled.div``;
+
+const SelectWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  h4 {
+    padding-right: 30px;
+  }
+`;
+
 function Kontrahenci() {
   const [allKontrahenci, setAllKontrahenci] = useState();
   const [state, dispatch] = useReducer(reducer, initialStateForm);
   const [allFilled, setAllFiled] = useState(false);
   const [selectedToDelete, setSelectedToDelete] = useState([]);
+
+  const [allNipy, setAllNipy] = useState([]);
+  const [selectedNip, setSelectedNip] = useState('');
+  const [findKontrahent, setFindKontrahent] = useState(false);
+  const [isUpdateFilled, setIsUpadteFilled] = useState(false);
+
+  const selectOnChange = (event) => {
+    const nip = event.target.value;
+    setSelectedNip(nip);
+    console.log(selectedNip);
+    axios
+      .get(`https://kontrahenci-api.herokuapp.com/kontrahenci/${nip}`)
+      .then(function (response) {
+        const readyObject = response.data[0];
+        delete readyObject['__v'];
+        delete readyObject['_id'];
+        delete readyObject['nip'];
+        console.log(readyObject);
+        setFindKontrahent(readyObject);
+      })
+      .catch(function (error) {
+        console.log('bład łaczenia z bazą danych', error);
+      });
+  };
 
   useEffect(() => {
     let isFilled = false;
@@ -104,6 +144,10 @@ function Kontrahenci() {
       .get('https://kontrahenci-api.herokuapp.com/kontrahenci')
       .then(function (response) {
         setAllKontrahenci(response.data.kontrahenci);
+
+        const allNipyFilter = response.data.kontrahenci.map((item) => item.nip);
+        setAllNipy(allNipyFilter);
+        console.log(allNipyFilter);
       })
       .catch(function (error) {
         console.error('bład łaczenia z bazą danych', error);
@@ -134,6 +178,32 @@ function Kontrahenci() {
         branza,
       },
     });
+  };
+
+  const checkIsFilledUpdateKontrahent = (e) => {
+    if (!e.target.value) {
+      setIsUpadteFilled(false);
+    } else {
+      setIsUpadteFilled(
+        Object.keys(findKontrahent).every((k) => findKontrahent[k])
+      );
+    }
+  };
+
+  const updateKontrahent = () => {
+    axios({
+      method: 'PATCH',
+      url: `https://kontrahenci-api.herokuapp.com/kontrahenci/nip/${selectedNip}`,
+      data: findKontrahent,
+    })
+      .then(function (response) {
+        console.log(response);
+        setSelectedNip(null);
+        setFindKontrahent(null);
+      })
+      .catch(function (error) {
+        console.error('bład łaczenia z bazą danych', error);
+      });
   };
 
   return (
@@ -199,6 +269,60 @@ function Kontrahenci() {
             />
           </CodeBlockDiv>
         </CodeWrapper> */}
+        <FindKontrahent>
+          <h2>Znajdź i edytuj kontrahenta</h2>
+          <SelectWrapper>
+            <h4>Wybierz kontrahenta:</h4>
+            <FormControl variant='outlined'>
+              <InputLabel id='demo-simple-select-outlined-label'>
+                NIP
+              </InputLabel>
+              <Select value={selectedNip} onChange={selectOnChange} label='NIP'>
+                {allNipy.map((kontrahent, i) => (
+                  <MenuItem key={kontrahent} value={Number(kontrahent)}>
+                    {kontrahent}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </SelectWrapper>
+          <StyledForm>
+            {findKontrahent &&
+              Object.keys(findKontrahent).map((item) => {
+                if (item !== '_id' && item !== '__v' && item !== 'nip') {
+                  return (
+                    <TextField
+                      key={item}
+                      variant='outlined'
+                      id={item}
+                      label={item}
+                      value={findKontrahent[item]}
+                      onChange={(e) => {
+                        setFindKontrahent((prev) => {
+                          return {
+                            ...prev,
+                            [item]: e.target.value,
+                          };
+                        });
+                        checkIsFilledUpdateKontrahent(e);
+                      }}
+                      size='small'
+                      required
+                    />
+                  );
+                }
+              })}
+            {findKontrahent && (
+              <Button
+                disabled={!isUpdateFilled}
+                variant='contained'
+                onClick={updateKontrahent}
+              >
+                Popraw dane
+              </Button>
+            )}
+          </StyledForm>
+        </FindKontrahent>
       </BottomDiv>
     </>
   );

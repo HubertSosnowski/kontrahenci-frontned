@@ -130,7 +130,9 @@ function Faktury() {
           console.log(response.data);
         })
         .catch(function (error) {
-          window.alert(error);
+          window.alert(
+            `Request URL: https://invoicingmodulepipdproject.azurewebsites.net/api/Invoices/NIP/${selectedNip}?date_do=${doDate}&date_od=${odDate}`
+          );
         });
     } else {
       const allFakturyFilter = staticData.filter(
