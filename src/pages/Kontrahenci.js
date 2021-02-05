@@ -140,6 +140,7 @@ function Kontrahenci() {
   }, []);
 
   const getAllKontrahenci = () => {
+    setAllKontrahenci([]);
     axios
       .get('https://kontrahenci-api.herokuapp.com/kontrahenci')
       .then(function (response) {
@@ -200,6 +201,7 @@ function Kontrahenci() {
         console.log(response);
         setSelectedNip(null);
         setFindKontrahent(null);
+        getAllKontrahenci();
       })
       .catch(function (error) {
         console.error('bład łaczenia z bazą danych', error);
