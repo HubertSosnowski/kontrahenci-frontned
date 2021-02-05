@@ -1,0 +1,13 @@
+.info {
+  font-size: 17px;
+  color: #afafaf;
+}
+
+.padding {
+  padding-right: 10px;
+}
+
+.large {
+  font-size: 30px;
+  font-weight: 500;
+}

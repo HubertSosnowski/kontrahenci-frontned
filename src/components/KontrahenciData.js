@@ -37,15 +37,15 @@ const initialStateForm = {
 };
 
 const columns = [
-  { field: 'id', headerName: 'ID', width: 210 },
-  { field: 'nazwa_kontrachenta', headerName: 'Nazwa kontrahenta', width: 190 },
   { field: 'nip', headerName: 'Numer NIP', width: 130 },
+  { field: 'nazwa_kontrachenta', headerName: 'Nazwa kontrahenta', width: 190 },
   { field: 'adres', headerName: 'Adres', width: 190 },
   { field: 'branza', headerName: 'Branża', width: 190 },
   { field: 'regon', headerName: 'Numer Regon', width: 140 },
   { field: 'krs', headerName: 'Numer KRS', width: 130 },
   { field: 'email', headerName: 'Adres Email', width: 190 },
   { field: 'numer_telefonu', headerName: 'Numer Telefonu', width: 150 },
+  { field: 'id', headerName: 'ID', width: 210 },
 ];
 
 const reducer = (state, action) => {

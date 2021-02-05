@@ -8,6 +8,10 @@ import styled from 'styled-components';
 import axios from 'axios';
 import Fakerator from 'fakerator';
 import { CodeBlock, dracula } from 'react-code-blocks';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 
 import {
   columns,
@@ -42,6 +46,15 @@ const CodeBlockDiv = styled.div`
   font-family: 'Fira Code', monospace;
 `;
 
+const SelectWrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  h4 {
+    padding-right: 30px;
+  }
+`;
+
 const CodeWrapper = styled.div``;
 
 function Adresy() {
@@ -49,9 +62,26 @@ function Adresy() {
   const [state, dispatch] = useReducer(reducer, initialStateForm);
   const [selectedToDelete, setSelectedToDelete] = useState([]);
   const [allAdresy, setAllAdresy] = useState([]);
+  const [allNipy, setAllNipy] = useState([]);
+  const [selectedNip, setSelectedNip] = useState('');
+
+  const selectOnChange = (event) => {
+    const nip = event.target.value;
+    setSelectedNip(nip);
+    console.log(selectedNip);
+    axios
+      .get(`https://kontrahenci-api.herokuapp.com/adresy/nip/${nip}`)
+      .then(function (response) {
+        setAllAdresy(response.data.adresy);
+        console.log(response.data.adresy);
+      })
+      .catch(function (error) {
+        console.log('bład łaczenia z bazą danych', error);
+      });
+  };
 
   useEffect(() => {
-    getAllAdresy();
+    getAllNipy();
   }, []);
 
   useEffect(() => {
@@ -60,12 +90,13 @@ function Adresy() {
     setAllFiled(isFilled);
   }, [state]);
 
-  const getAllAdresy = () => {
+  const getAllNipy = () => {
     axios
-      .get('https://kontrahenci-api.herokuapp.com/adresy')
+      .get('https://kontrahenci-api.herokuapp.com/kontrahenci')
       .then(function (response) {
-        console.log(response);
-        setAllAdresy(response.data.adresy);
+        // setSelectedNip(response.data.kontrahenci[0].nip);
+        setAllNipy(response.data.kontrahenci);
+        console.log(response.data.kontrahenci);
       })
       .catch(function (error) {
         console.error('bład łaczenia z bazą danych', error);
@@ -88,15 +119,12 @@ function Adresy() {
   };
 
   const submitKontrahent = () => {
+    console.log(state);
     axios({
       method: 'post',
       url: 'https://kontrahenci-api.herokuapp.com/adresy',
       data: state,
-    })
-      .then((res) =>
-        setAllAdresy((prev) => [...prev, { ...res.data, id: res.data._id }])
-      )
-      .catch((err) => window.alert('Brak kontrahenta o podanym id.'));
+    }).catch((err) => window.alert('Brak kontrahenta o podanym id.'));
   };
 
   const textUpdateFunction = (e, item) => {
@@ -123,7 +151,20 @@ function Adresy() {
 
   return (
     <>
-      <h2>Wszystkie Adresy</h2>
+      <h2>Adresy danego kontrahenta</h2>
+      <SelectWrapper>
+        <h4>Wybierz kontrahenta:</h4>
+        <FormControl variant='outlined'>
+          <InputLabel id='demo-simple-select-outlined-label'>NIP</InputLabel>
+          <Select value={selectedNip} onChange={selectOnChange} label='NIP'>
+            {allNipy.map((kontrahent, i) => (
+              <MenuItem key={kontrahent.nip} value={Number(kontrahent.nip)}>
+                {kontrahent.nip}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </SelectWrapper>
       <div style={{ height: 400, width: '100%', color: '#efeff1' }}>
         <DataGrid
           rows={allAdresy ? allAdresy : []}
@@ -147,8 +188,28 @@ function Adresy() {
         <AddAdres style={{ width: '350px' }}>
           <h2>Dodaj nowy adres dla danego kontrahenta</h2>
           <StyledForm>
+            <FormControl variant='outlined'>
+              <InputLabel id='demo-simple-select-outlined-label'>
+                NIP
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                value={state.id_kontrahenta.field}
+                onChange={(e) =>
+                  textUpdateFunction(e, { field: 'id_kontrahenta' })
+                }
+                label='NIP'
+              >
+                {allNipy.map((kontrahent, i) => (
+                  <MenuItem key={kontrahent.nip} value={kontrahent.id}>
+                    {kontrahent.nip}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             {columns.map((item) => {
-              if (item.field !== 'id') {
+              if (item.field !== 'id' && item.field !== 'id_kontrahenta') {
                 return (
                   <TextField
                     key={item.field}
@@ -174,12 +235,12 @@ function Adresy() {
             </Button>
           </StyledForm>
         </AddAdres>
-        <CodeWrapper>
+        {/* <CodeWrapper>
           <h2>Przykładowy kod</h2>
           <CodeBlockDiv>
             <CodeBlock text={sampleCode} theme={dracula} language='jsx' />
           </CodeBlockDiv>
-        </CodeWrapper>
+        </CodeWrapper> */}
       </BottomDiv>
     </>
   );

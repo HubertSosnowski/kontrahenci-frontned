@@ -62,13 +62,14 @@ function Kontrahenci() {
       url: 'https://kontrahenci-api.herokuapp.com/kontrahenci',
       data: state,
     })
-      .then((res) =>
+      .then((res) => {
+        dispatch({ type: 'setAll', value: initialStateForm });
         setAllKontrahenci((prev) => [
           ...prev,
           { ...res.data, id: res.data._id },
-        ])
-      )
-      .catch((err) => console.log('bład z bazą danych', err));
+        ]);
+      })
+      .catch((err) => window.alert(err.response.data.message));
   };
 
   const textUpdateFunction = (e, item) => {
@@ -188,7 +189,7 @@ function Kontrahenci() {
             </Button>
           </StyledForm>
         </AddKontrahent>
-        <CodeWrapper>
+        {/* <CodeWrapper>
           <h2>Przykładowy kod</h2>
           <CodeBlockDiv>
             <CodeBlock
@@ -197,7 +198,7 @@ function Kontrahenci() {
               language='jsx'
             />
           </CodeBlockDiv>
-        </CodeWrapper>
+        </CodeWrapper> */}
       </BottomDiv>
     </>
   );

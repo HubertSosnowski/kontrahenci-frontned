@@ -2,9 +2,10 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Kontrahenci from './pages/Kontrahenci';
 import Navigation from './components/Navigation';
+import Kontrahenci from './pages/Kontrahenci';
 import Adresy from './pages/Adresy';
+import Faktury from './pages/Faktury';
 import Root from './pages/Root';
 
 const AppWrapper = styled.div`
@@ -20,6 +21,7 @@ const App = () => {
         <Route path='/' exact component={Root} />
         <Route path='/kontrahenci' component={Kontrahenci} />
         <Route path='/adresy' component={Adresy} />
+        <Route path='/faktury' component={Faktury} />
       </Switch>
     </AppWrapper>
   );

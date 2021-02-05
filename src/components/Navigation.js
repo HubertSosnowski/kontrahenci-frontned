@@ -70,6 +70,17 @@ function Navigation() {
             Adresy
           </StyledNavLink>
         </ListItem>
+        <ListItem>
+          <StyledNavLink
+            activeStyle={{
+              fontWeight: 'bold',
+              color: '#3f51b5',
+            }}
+            to='/faktury'
+          >
+            Faktury
+          </StyledNavLink>
+        </ListItem>
         {/* <ListItem>
           <StyledNavLink to='/'></StyledNavLink>
         </ListItem> */}
