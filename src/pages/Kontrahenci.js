@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import styled from 'styled-components';
 import axios from 'axios';
 import Fakerator from 'fakerator';
-import { CodeBlock, dracula } from 'react-code-blocks';
+// import { CodeBlock, dracula } from 'react-code-blocks';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -15,22 +15,22 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import {
-  sampleCodeKontrahenci,
+  // sampleCodeKontrahenci,
   initialStateForm,
   columns,
   reducer,
 } from '../components/KontrahenciData';
 
 const DeleteButtonWrapper = styledMaterial(Button)({
-  bottom: '20px',
+  bottom: '10px',
   left: '150px',
   position: 'absolute',
 });
 
-const CodeBlockDiv = styled.div`
-  font-size: 13px;
-  font-family: 'Fira Code', monospace;
-`;
+// const CodeBlockDiv = styled.div`
+//   font-size: 13px;
+//   font-family: 'Fira Code', monospace;
+// `;
 
 const AddKontrahent = styled.div`
   padding: 12px;
@@ -47,7 +47,7 @@ const BottomDiv = styled.div`
   flex-wrap: wrap;
 `;
 
-const CodeWrapper = styled.div``;
+// const CodeWrapper = styled.div``;
 
 const FindKontrahent = styled.div``;
 
@@ -74,7 +74,6 @@ function Kontrahenci() {
   const selectOnChange = (event) => {
     const nip = event.target.value;
     setSelectedNip(nip);
-    console.log(selectedNip);
     axios
       .get(`https://kontrahenci-api.herokuapp.com/kontrahenci/${nip}`)
       .then(function (response) {
@@ -82,7 +81,6 @@ function Kontrahenci() {
         delete readyObject['__v'];
         delete readyObject['_id'];
         delete readyObject['nip'];
-        console.log(readyObject);
         setFindKontrahent(readyObject);
       })
       .catch(function (error) {
@@ -123,7 +121,6 @@ function Kontrahenci() {
           .delete(
             `https://kontrahenci-api.herokuapp.com/kontrahenci/${selectedId}`
           )
-          .then((res) => console.log(res))
           .then(
             setAllKontrahenci((old) =>
               old.filter((item) => item._id !== selectedId)
@@ -148,7 +145,6 @@ function Kontrahenci() {
 
         const allNipyFilter = response.data.kontrahenci.map((item) => item.nip);
         setAllNipy(allNipyFilter);
-        console.log(allNipyFilter);
       })
       .catch(function (error) {
         console.error('bład łaczenia z bazą danych', error);
@@ -198,7 +194,6 @@ function Kontrahenci() {
       data: findKontrahent,
     })
       .then(function (response) {
-        console.log(response);
         setSelectedNip(null);
         setFindKontrahent(null);
         getAllKontrahenci();
@@ -221,6 +216,7 @@ function Kontrahenci() {
           onSelectionChange={(e) => setSelectedToDelete(e.rowIds)}
         />
         <DeleteButtonWrapper
+          className='delete-button'
           onClick={deleteButtonClick}
           disabled={selectedToDelete.length ? false : true}
           startIcon={<DeleteIcon />}
@@ -313,6 +309,7 @@ function Kontrahenci() {
                     />
                   );
                 }
+                return null;
               })}
             {findKontrahent && (
               <Button

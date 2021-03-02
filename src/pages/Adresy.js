@@ -7,7 +7,7 @@ import { styled as styledMaterial } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import axios from 'axios';
 import Fakerator from 'fakerator';
-import { CodeBlock, dracula } from 'react-code-blocks';
+// import { CodeBlock, dracula } from 'react-code-blocks';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -17,11 +17,11 @@ import {
   columns,
   reducer,
   initialStateForm,
-  sampleCode,
+  // sampleCode,
 } from '../components/AdresyData';
 
 const DeleteButtonWrapper = styledMaterial(Button)({
-  bottom: '20px',
+  bottom: '10px',
   left: '150px',
   position: 'absolute',
 });
@@ -41,10 +41,10 @@ const BottomDiv = styled.div`
   flex-wrap: wrap;
 `;
 
-const CodeBlockDiv = styled.div`
-  font-size: 13px;
-  font-family: 'Fira Code', monospace;
-`;
+// const CodeBlockDiv = styled.div`
+//   font-size: 13px;
+//   font-family: 'Fira Code', monospace;
+// `;
 
 const SelectWrapper = styled.div`
   display: flex;
@@ -55,7 +55,7 @@ const SelectWrapper = styled.div`
   }
 `;
 
-const CodeWrapper = styled.div``;
+// const CodeWrapper = styled.div``;
 
 function Adresy() {
   const [allFilled, setAllFiled] = useState(false);
@@ -68,12 +68,10 @@ function Adresy() {
   const selectOnChange = (event) => {
     const nip = event.target.value;
     setSelectedNip(nip);
-    console.log(selectedNip);
     axios
       .get(`https://kontrahenci-api.herokuapp.com/adresy/nip/${nip}`)
       .then(function (response) {
         setAllAdresy(response.data.adresy);
-        console.log(response.data.adresy);
       })
       .catch(function (error) {
         console.log('bład łaczenia z bazą danych', error);
@@ -96,7 +94,6 @@ function Adresy() {
       .then(function (response) {
         // setSelectedNip(response.data.kontrahenci[0].nip);
         setAllNipy(response.data.kontrahenci);
-        console.log(response.data.kontrahenci);
       })
       .catch(function (error) {
         console.error('bład łaczenia z bazą danych', error);
@@ -108,7 +105,6 @@ function Adresy() {
       selectedToDelete.forEach((selectedId) => {
         axios
           .delete(`https://kontrahenci-api.herokuapp.com/adresy/${selectedId}`)
-          .then((res) => console.log(res))
           .then(
             setAllAdresy((old) => old.filter((item) => item._id !== selectedId))
           )
@@ -119,7 +115,6 @@ function Adresy() {
   };
 
   const submitKontrahent = () => {
-    console.log(state);
     axios({
       method: 'post',
       url: 'https://kontrahenci-api.herokuapp.com/adresy',
@@ -175,6 +170,7 @@ function Adresy() {
           onSelectionChange={(e) => setSelectedToDelete(e.rowIds)}
         />
         <DeleteButtonWrapper
+          className='delete-button'
           onClick={deleteButtonClick}
           disabled={selectedToDelete.length ? false : true}
           startIcon={<DeleteIcon />}

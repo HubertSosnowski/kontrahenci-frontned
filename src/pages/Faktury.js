@@ -18,8 +18,14 @@ const SelectWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1200px;
+  max-width: 1300px;
   flex-wrap: wrap;
+
+  @media (max-width: 1300px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
 `;
 
 const SwitchWrapper = styled.div`
@@ -30,6 +36,10 @@ const SwitchWrapper = styled.div`
 
 const DisplayFaktury = styled.div`
   margin: 100px 50px;
+
+  @media (max-width: 1300px) {
+    margin: 50px 0;
+  }
 `;
 
 const FirstLineFaktura = styled.div`
@@ -38,10 +48,16 @@ const FirstLineFaktura = styled.div`
   justify-content: space-between;
 
   margin-bottom: 30px;
+
+  @media (max-width: 1300px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
 `;
 
 const FakturyGrid = styled.div`
-  max-width: 1200px;
+  max-width: 1300px;
 `;
 
 const Faktura = styled.div`
@@ -52,6 +68,10 @@ const Faktura = styled.div`
 
   &:not(:first-child) {
     border-top: 1px solid #afafaf;
+  }
+
+  @media (max-width: 1300px) {
+    flex-direction: column;
   }
 `;
 
@@ -100,16 +120,11 @@ function Faktury() {
       .then(function (response) {
         setSelectedNip(response.data.kontrahenci[0].nip);
         setAllKontrahenci(response.data.kontrahenci);
-        console.log(response.data.kontrahenci);
       })
       .catch(function (error) {
         console.error('bład łaczenia z bazą danych', error);
       });
   };
-
-  useEffect(() => {
-    console.log(selectedNip);
-  }, [selectedNip]);
 
   const formSubmit = () => {
     console.log(selectedNip, switchApi, odDate, doDate);
@@ -127,7 +142,6 @@ function Faktury() {
             setAllFaktury(response.data);
             calculateValue(response.data);
           }
-          console.log(response.data);
         })
         .catch(function (error) {
           window.alert(
